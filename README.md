@@ -28,35 +28,35 @@ postgres-data-modeling
 
 ### Instructions for running locally
 
-Clone repository to local machine
+#### Clone repository to local machine
 ```
 git clone https://github.com/brfulu/datalake-spark-etl.git
 ```
 
-Change directory to local repository
+#### Change directory to local repository
 ```
 cd datalake-spark-etl
 ```
 
-Create python virtual environment
+#### Create python virtual environment
 ```
 python3 -m venv venv             # create virtualenv
 source venv/bin/activate         # activate virtualenv
 pip install -r requirements.txt  # install requirements
 ```
 
-Go to source directory
+#### Go to source directory
 ```
 cd src/
 ```
 
-Run etl script in local mode
+#### Run etl script in local mode
 ```
 python -m scripts.etl
 ```
 
 ### Instructions for running on AWS
-####Edit dl.cfg file
+#### Edit dl.cfg file
 Do NOT publish your AWS credentials publicly.
 ```
 [AWS]
@@ -72,12 +72,12 @@ INPUT_DATA=s3a://udacity-dend/
 OUTPUT_DATA=s3a://<OUTPUT_BUCKET NAME>/
 ```
 
-####Deploy to AWS
+#### Deploy to AWS
 ```
 python -m scripts.deploy
 ```
 
-####Check results
+#### Check results
 Go to the AWS management console and to the EMR service and check the cluster and job status. 
 After confirming the job run successfully, then run steps below to query the datalake.
 ```
@@ -87,5 +87,5 @@ jupyter notebook  # launch jupyter notebook app
 # Navigate to src/notebooks/test.ipynb and run sql queries against the datalake
 ```
 
-####Shut down AWS resources
+#### Shut down AWS resources
 Go to the AWS management console (Oregon region) and terminate the EMR cluster to avoid further costs.
