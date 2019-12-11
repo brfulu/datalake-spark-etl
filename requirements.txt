@@ -1,2 +1,4 @@
 pyspark
 boto3
+jupyter
+pandas

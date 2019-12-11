@@ -40,7 +40,7 @@ def create_emr_cluster(emr_client, config):
                     'Market': 'ON_DEMAND',
                     'InstanceRole': 'CORE',
                     'InstanceType': 'm5.xlarge',
-                    'InstanceCount': 2,
+                    'InstanceCount': 4,
                 }
             ],
             'KeepJobFlowAliveWhenNoSteps': False,
@@ -60,7 +60,8 @@ def create_emr_cluster(emr_client, config):
                 'ActionOnFailure': 'CANCEL_AND_WAIT',
                 'HadoopJarStep': {
                     'Jar': 'command-runner.jar',
-                    'Args': ['aws', 's3', 'cp', 's3://spark-script-fulu/', '/home/hadoop/', '--recursive']
+                    'Args': ['aws', 's3', 'cp', 's3://' + config['S3']['CODE_BUCKET'], '/home/hadoop/',
+                             '--recursive']
                 }
             },
             {
@@ -87,7 +88,7 @@ def create_bucket(s3_client, bucket_name):
 
 
 def upload_code(s3_client, file_name, bucket_name):
-    s3_client.upload_file(file_name, bucket_name, file_name)
+    s3_client.upload_file(file_name, bucket_name, 'etl.py')
 
 
 def create_iam_role(iam_client):
@@ -122,7 +123,7 @@ def main():
     config.read('../dl.cfg')
 
     iam_client = boto3.client('iam')
-    role = create_iam_role(iam_client)
+    # create_iam_role(iam_client)
 
     s3_client = boto3.client(
         's3',
@@ -131,9 +132,9 @@ def main():
         aws_secret_access_key=config['AWS']['AWS_SECRET_ACCESS_KEY'],
     )
 
-    create_bucket(s3_client, config['S3']['OUTPUT_BUCKET'])
-    create_bucket(s3_client, config['S3']['CODE_BUCKET'])
-    upload_code(s3_client, 'etl.py', config['S3']['CODE_BUCKET'])
+    # create_bucket(s3_client, config['S3']['OUTPUT_BUCKET'])
+    # create_bucket(s3_client, config['S3']['CODE_BUCKET'])
+    upload_code(s3_client, 'scripts/etl.py', config['S3']['CODE_BUCKET'])
 
     emr_client = boto3.client(
         'emr',

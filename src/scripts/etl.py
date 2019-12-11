@@ -17,7 +17,7 @@ def create_spark_session():
 
 def process_song_data(spark, input_data, output_data):
     # get filepath to song data file
-    song_data = os.path.join(input_data, 'song_data/A/A/A/*.json')
+    song_data = os.path.join(input_data, 'song_data/*/*/*/*.json')
 
     # read song data file
     df = spark.read.json(song_data)
@@ -39,7 +39,7 @@ def process_song_data(spark, input_data, output_data):
 
 def process_log_data(spark, input_data, output_data):
     # get filepath to log data file
-    log_data = os.path.join(input_data, 'log_data/2018/11/*.json')
+    log_data = os.path.join(input_data, 'log_data/*/*/*.json')
 
     # read log data file
     df = spark.read.json(log_data)
@@ -49,6 +49,7 @@ def process_log_data(spark, input_data, output_data):
 
     # extract columns for users table
     users_table = df['userId', 'firstName', 'lastName', 'gender', 'level']
+    users_table = users_table.drop_duplicates(subset='userId')
 
     # write users table to parquet files
     users_table.write.parquet(os.path.join(output_data, 'users'), 'overwrite')
@@ -67,6 +68,7 @@ def process_log_data(spark, input_data, output_data):
         F.year('datetime').alias('year'),
         F.date_format('datetime', 'u').alias('weekday')
     )
+    time_table = time_table.drop_duplicates(subset=['start_time'])
 
     # write time table to parquet files partitioned by year and month
     time_table.write.partitionBy(['year', 'month']).parquet(os.path.join(output_data, 'time'), 'overwrite')
@@ -78,6 +80,7 @@ def process_log_data(spark, input_data, output_data):
     df = df['datetime', 'userId', 'level', 'song', 'artist', 'sessionId', 'location', 'userAgent']
 
     log_song_df = df.join(song_df, df.song == song_df.title)
+
     songplays_table = log_song_df.select(
         F.monotonically_increasing_id().alias('songplay_id'),
         F.col('datetime').alias('start_time'),
@@ -92,19 +95,17 @@ def process_log_data(spark, input_data, output_data):
         F.col('userAgent').alias('user_agent')
     )
 
-    print(songplays_table.count())
-    songplays_table.show(7)
-
     # write songplays table to parquet files partitioned by year and month
     songplays_table.write.partitionBy(['year', 'month']).parquet(os.path.join(output_data, 'songplays'), 'overwrite')
 
 
 def main():
     if len(sys.argv) == 3:
+        # aws cluster mode
         input_data = sys.argv[1]
         output_data = sys.argv[2]
     else:
-        print('usao')
+        # local mode
         config = configparser.ConfigParser()
         config.read('../dl.cfg')
 
