@@ -1,15 +1,15 @@
 # datalake-spark-etl
 
-### Udacity Data Engineer Nanodegree project
+## Udacity Data Engineer Nanodegree project
 A music streaming startup, Sparkify, has grown their user base and song database even more and want to move their data warehouse to a data lake. Their data resides in S3, in a directory of JSON logs on user activity on the app, as well as a directory with JSON metadata on the songs in their app.
 
 As their data engineer, you are tasked with building an ETL pipeline that extracts their data from S3, processes them using Spark, and loads the data back into S3 as a set of dimensional tables. This will allow their analytics team to continue finding insights in what songs their users are listening to.
 
-### Requirements for running
+## Requirements for running
 - Python3 
 - AWS account
 
-### Project structure explanation
+## Project structure explanation
 ```
 postgres-data-modeling
 │   README.md             # Project description
@@ -26,7 +26,7 @@ postgres-data-modeling
 |       |  deploy.py      # Deploy everything on AWS (buckets, roles, clusters) and run etl
 ```
 
-### Instructions for running locally
+## Instructions for running locally
 
 #### Clone repository to local machine
 ```
@@ -55,7 +55,7 @@ cd src/
 python -m scripts.etl
 ```
 
-### Instructions for running on AWS
+## Instructions for running on AWS
 #### Edit dl.cfg file
 Do NOT publish your AWS credentials publicly.
 ```
@@ -73,6 +73,7 @@ OUTPUT_DATA=s3a://<OUTPUT_BUCKET NAME>/
 ```
 
 #### Deploy to AWS
+The script automatically creates two S3 buckets (code_bucket and output_bucket), an IAM Role for EMR to access S3, and finally initiates the creation of the EMR cluster.
 ```
 python -m scripts.deploy
 ```
